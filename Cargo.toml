@@ -1,0 +1,49 @@
+[package]
+name = "kidctl"
+version = "0.1.0"
+edition = "2024"
+description = "GitOps parental control: policy compiler, device sync API and read-only MCP"
+license = "MIT"
+publish = false
+
+[dependencies]
+axum = { version = "0.8", default-features = false, features = ["tokio", "http1", "json"] }
+chrono = { version = "0.4.45", default-features = false, features = ["std", "clock", "serde"] }
+chrono-tz = "0.10.4"
+clap = { version = "4.6", features = ["derive", "env"] }
+hex = "0.4"
+# OAuth 2.1 for the MCP endpoint and the abuse-protection guard (shared-IP
+# mode, app credentials counted in the same ban state). Pinned revision of the
+# public crate; imported as `mcp_oauth`.
+mcp-oauth = { git = "https://github.com/mcp-oauth-rs/mcp-oauth", rev = "0e70ca9673f48cc5aa3c8a790c42be22ee82525e", package = "mcp-oauth-server" }
+rand = "0.10"
+rmcp = { version = "3.5.1", features = ["transport-io", "transport-streamable-http-server"] }
+rusqlite = { version = "0.40", features = ["bundled"] }
+schemars = "1.2.3"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml_ng = "0.10"
+sha2 = "0.10"
+subtle = "2"
+tokio = { version = "1.53", features = ["rt-multi-thread", "macros", "sync", "net", "signal", "time", "fs", "process"] }
+yamlpath = "1.31.1"
+
+[dev-dependencies]
+base64 = "0.23"
+serde_urlencoded = "0.7"
+tempfile = "3"
+tower = { version = "0.5", features = ["util"] }
+http-body-util = "0.1"
+tokio = { version = "1.53", features = ["test-util"] }
+
+[profile.release]
+lto = "thin"
+strip = true
+
+# Argon2 (OAuth owner password) is unusably slow unoptimised; keep tests and
+# debug builds fast.
+[profile.dev.package.argon2]
+opt-level = 3
+
+[profile.dev.package.blake2]
+opt-level = 3

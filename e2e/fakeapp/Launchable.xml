@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- e2e only: a code-free, user-installed app with a launcher icon, so the
+     agent evaluates it (it only enforces launchable apps): the MCP write
+     matrix uses two of them for approval (one approved, one not) and the
+     lock override. The default_apps fakes (AndroidManifest.xml) have no
+     launcher icon on purpose. Built by e2e/run.sh with aapt2 + apksigner. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="io.github.kidctl.e2eapp"
+    android:versionCode="1"
+    android:versionName="1">
+    <uses-sdk android:minSdkVersion="33" android:targetSdkVersion="37" />
+    <application android:label="kidctl e2e app" android:hasCode="false">
+        <activity android:name="android.app.Activity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

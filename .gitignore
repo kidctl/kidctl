@@ -1,0 +1,18 @@
+/target
+*.db
+*.db-*
+.env
+agent/.gradle/
+agent/build/
+agent/app/build/
+agent/local.properties
+agent/.idea/
+*.apk
+/e2e/out/
+/e2e/out-*/
+CLAUDE.md
+PLAN-*.md
+
+# Local-only notes and assistant state: never commit
+/local/
+.claude/

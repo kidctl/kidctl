@@ -1,0 +1,10 @@
+target
+agent
+e2e
+docs
+examples
+.git
+deploy
+ci
+.github
+.githooks

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- e2e only: a code-free app that declares a managed configuration
+     (res/xml/app_restrictions.xml: one key of each type kidctl sets), for the
+     device.app_config steps of the MCP write matrix. No activity: the agent
+     configures any installed package. Built by e2e/run.sh with aapt2
+     (compile + link with res/) + apksigner. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="io.github.kidctl.e2econf"
+    android:versionCode="1"
+    android:versionName="1">
+    <uses-sdk android:minSdkVersion="33" android:targetSdkVersion="37" />
+    <application android:label="kidctl e2e configurable" android:hasCode="false">
+        <meta-data android:name="android.content.APP_RESTRICTIONS" android:resource="@xml/app_restrictions" />
+    </application>
+</manifest>

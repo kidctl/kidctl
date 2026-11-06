@@ -1,0 +1,13 @@
+# SQLite state (usage, apps, events), OAuth state (/data/oauth), the agent
+# release directory (/data/agent) and the MCP write tools' private git clone
+# (/data/gitops). Must persist. The rules are not here: they come from the
+# kidctl-policies ConfigMap.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 1Gi

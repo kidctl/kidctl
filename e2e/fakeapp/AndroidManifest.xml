@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- e2e only: a code-free app offering a home screen and a browser, so the
+     default_apps steps have a candidate that is NOT the system default. Its
+     activity is the framework's own android.app.Activity (blank screen).
+     Built by e2e/run.sh with aapt2 + apksigner (debug key). -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="io.github.kidctl.e2efake"
+    android:versionCode="1"
+    android:versionName="1">
+    <uses-sdk android:minSdkVersion="33" android:targetSdkVersion="37" />
+    <application android:label="kidctl e2e fake" android:hasCode="false">
+        <activity android:name="android.app.Activity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

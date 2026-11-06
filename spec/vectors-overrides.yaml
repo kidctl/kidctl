@@ -1,0 +1,6 @@
+overrides:
+  - {extra: 30m, limit: general, from: "2026-10-22T00:00", until: "2026-10-22T23:59", note: "Thursday bonus"}
+  - {lock: true, from: "2026-10-20T12:00", until: "2026-10-20T13:00"}
+  - {lock: true, screen: true, from: "2026-10-23T14:00", until: "2026-10-23T15:00", note: "screen locked"}
+  - {unlock: true, from: "2026-10-21T22:00", until: "2026-10-21T23:30"}
+  - {extra: 20m, limit: social, from: "2026-10-23T17:00", until: "2026-10-23T21:00", note: "Friday social bonus"}

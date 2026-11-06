@@ -1,0 +1,33 @@
+# Example Kubernetes deployment of the kidctl server (kustomize). Copy this
+# directory into the repository your GitOps reconciler (ArgoCD, Flux...)
+# syncs, adapt the marked values, and keep the rules in policies/: a push
+# there is the whole deployment of a rule change.
+#
+#   kubectl kustomize deploy/k8s     # render
+#   kubectl apply -k deploy/k8s      # without a GitOps reconciler
+#
+# Secrets are not in git: create them by hand (README, "Run the server").
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kidctl
+resources:
+  - namespace.yaml
+  - data.yaml
+  - server.yaml
+# THE RULES. Edit policies/*.yaml, `kidctl validate policies`, commit, push.
+# The kubelet refreshes the mounted ConfigMap (about a minute), the server
+# hot-reloads it (10 s) and keeps the previous rules if the new ones are
+# invalid; phones sync every minute. Stable name (no hash suffix): a rule
+# change does not restart the pod. List every file here.
+configMapGenerator:
+  - name: kidctl-policies
+    files:
+      - policies/devices.yaml
+      - policies/alex.yaml
+      - policies/alex.overrides.yaml
+    options:
+      disableNameSuffixHash: true
+images:
+  - name: kidctl-server
+    newName: registry.example.net/kidctl/server   # your registry
+    newTag: latest                                # deploy.sh bumps this to the git SHA

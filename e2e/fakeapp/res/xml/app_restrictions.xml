@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The managed configuration of the e2e configurable app (Configurable.xml):
+     one key per type kidctl converts to (bool, integer, string, choice,
+     multi-select), like a real app such as Tailscale declares its own. -->
+<restrictions xmlns:android="http://schemas.android.com/apk/res/android">
+    <restriction android:key="Enabled" android:restrictionType="bool" android:title="Enabled" android:defaultValue="false" />
+    <restriction android:key="Level" android:restrictionType="integer" android:title="Level" android:defaultValue="1" />
+    <restriction android:key="Server" android:restrictionType="string" android:title="Server" />
+    <restriction android:key="Mode" android:restrictionType="choice" android:title="Mode"
+        android:entries="@array/mode_entries" android:entryValues="@array/mode_values" android:defaultValue="user-decides" />
+    <restriction android:key="Features" android:restrictionType="multi-select" android:title="Features"
+        android:entries="@array/feature_entries" android:entryValues="@array/feature_values" />
+</restrictions>

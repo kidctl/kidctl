@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Runs the CI jobs on exactly what is pushed: a clean worktree of each pushed
+# commit, so uncommitted files in the main tree cannot hide or cause a failure.
+# Enable once per clone: git config core.hooksPath .githooks
+#
+# Optional, local only: a private denylist of extended regular expressions
+# (one per line, case-insensitive; blank lines and lines starting with # are
+# skipped), named by the LEAK_DENYLIST environment variable or by
+# `git config hooks.leakDenylist <file>`. When that file exists, no tracked
+# file of a pushed commit and no message of a commit it reaches may match.
+# The file stays outside the repository; only paths and counts are printed,
+# never the matched text.
+set -euo pipefail
+top=$(git rev-parse --show-toplevel)
+zero=0000000000000000000000000000000000000000
+
+denylist=${LEAK_DENYLIST:-$(git config --get hooks.leakDenylist || true)}
+patterns=
+if [ -n "$denylist" ] && [ -f "$denylist" ]; then
+    patterns=$(mktemp)
+    grep -vE '^[[:space:]]*(#|$)' "$denylist" > "$patterns" || true
+fi
+cleanup() { if [ -n "$patterns" ]; then rm -f "$patterns"; fi; }
+trap cleanup EXIT
+
+# denylist_check <sha> <worktree>: 0 when nothing matches.
+denylist_check() {
+    local sha=$1 wt=$2 files msgs
+    [ -n "$patterns" ] && [ -s "$patterns" ] || return 0
+    files=$(cd "$wt" && git ls-files -z | xargs -0 -r grep -EiHcI -f "$patterns" -- | grep -v ':0$' || true)
+    msgs=$(git log --format=%B "$sha" | grep -EicI -f "$patterns" || true)
+    if [ -n "$files" ] || [ "${msgs:-0}" -ne 0 ]; then
+        echo "pre-push: denylist matches in $sha (path:count; commit messages: ${msgs:-0})" >&2
+        [ -n "$files" ] && printf '  %s\n' "$files" >&2
+        return 1
+    fi
+    echo "pre-push: denylist clean on $sha (tracked files and $(git rev-list --count "$sha") commit messages)"
+}
+
+while read -r _local_ref local_sha _remote_ref _remote_sha; do
+    [ "$local_sha" = "$zero" ] && continue # branch deletion
+    wt=$(mktemp -d)
+    git worktree add --detach --quiet "$wt" "$local_sha"
+    status=0
+    # The pushed commit's own ci/run.sh, not the working tree's.
+    (cd "$wt" && CI_HOST=1 CARGO_TARGET_DIR="$top/target/pre-push" ./ci/run.sh) || status=$?
+    [ "$status" -eq 0 ] && { denylist_check "$local_sha" "$wt" || status=$?; }
+    git worktree remove --force "$wt"
+    [ "$status" -eq 0 ] || { echo "pre-push: checks failed on $local_sha" >&2; exit "$status"; }
+done

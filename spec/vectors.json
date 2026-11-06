@@ -1,0 +1,1177 @@
+{
+ "policy": {
+  "child": "alex",
+  "timezone": "Europe/Brussels",
+  "downtime": [
+   {
+    "start_min": 1320,
+    "end_min": 420,
+    "days": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   {
+    "start_min": 1380,
+    "end_min": 360,
+    "days": [
+     false,
+     false,
+     true,
+     false,
+     true,
+     false,
+     false
+    ],
+    "lock_screen": true
+   },
+   {
+    "start_min": 1140,
+    "end_min": 1170,
+    "days": [
+     false,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "lock_screen": true
+   }
+  ],
+  "always_allowed": [
+   "com.google.android.apps.maps",
+   "com.google.android.apps.messaging",
+   "com.google.android.dialer",
+   "com.joytunes.simplypiano"
+  ],
+  "blocked": [
+   "com.zhiliaoapp.musically"
+  ],
+  "limits": [
+   {
+    "name": "social",
+    "apps": [
+     "com.instagram.android",
+     "com.snapchat.android",
+     "com.whatsapp"
+    ],
+    "wildcard": false,
+    "exclude": [],
+    "daily_secs": [
+     1800,
+     1800,
+     1800,
+     1800,
+     1800,
+     2700,
+     2700
+    ],
+    "notify_at": [
+     50,
+     80,
+     95
+    ]
+   },
+   {
+    "name": "audio",
+    "apps": [
+     "com.spotify.music",
+     "com.audible.application"
+    ],
+    "wildcard": false,
+    "exclude": [],
+    "daily_secs": [
+     7200,
+     7200,
+     7200,
+     7200,
+     7200,
+     10800,
+     10800
+    ]
+   },
+   {
+    "name": "video",
+    "apps": [
+     "com.netflix.mediaclient",
+     "com.disney.disneyplus",
+     "com.amazon.avod.thirdpartyclient"
+    ],
+    "wildcard": false,
+    "exclude": [],
+    "daily_secs": [
+     0,
+     0,
+     0,
+     0,
+     9000,
+     9000,
+     0
+    ],
+    "notify_at": [
+     90
+    ]
+   },
+   {
+    "name": "general",
+    "apps": [],
+    "wildcard": true,
+    "exclude": [
+     "com.spotify.music",
+     "com.audible.application",
+     "com.netflix.mediaclient",
+     "com.disney.disneyplus",
+     "com.amazon.avod.thirdpartyclient"
+    ],
+    "daily_secs": [
+     3600,
+     3600,
+     3600,
+     3600,
+     3600,
+     5400,
+     5400
+    ],
+    "notify_at": [
+     50,
+     80,
+     95
+    ]
+   }
+  ],
+  "approval": true,
+  "approved": [],
+  "overrides": [
+   {
+    "kind": "extra",
+    "limit": "general",
+    "secs": 1800,
+    "from": 1792620000,
+    "until": 1792706340
+   },
+   {
+    "kind": "lock",
+    "from": 1792490400,
+    "until": 1792494000
+   },
+   {
+    "kind": "lock",
+    "from": 1792756800,
+    "until": 1792760400,
+    "screen": true
+   },
+   {
+    "kind": "unlock",
+    "from": 1792612800,
+    "until": 1792618200
+   },
+   {
+    "kind": "extra",
+    "limit": "social",
+    "secs": 1200,
+    "from": 1792767600,
+    "until": 1792782000
+   }
+  ],
+  "device": {
+   "restrictions": [
+    "no_factory_reset",
+    "no_safe_boot",
+    "no_config_date_time",
+    "disallow_config_default_apps"
+   ],
+   "uninstall_blocked": [],
+   "user_control_disabled": [
+    "com.tailscale.ipn"
+   ],
+   "organization_name": "kidctl",
+   "hidden": [],
+   "camera_disabled": false,
+   "screen_capture_disabled": false,
+   "auto_system_updates": false,
+   "location_always_on": false,
+   "wifi_ssids": {
+    "allow": [
+     "HomeNet",
+     "École du Centre"
+    ]
+   },
+   "default_apps": {
+    "browser": "com.android.chrome",
+    "launcher": "com.google.android.apps.nexuslauncher"
+   }
+  },
+  "notify": {
+   "before_downtime_secs": 300,
+   "locale": "fr"
+  }
+ },
+ "cases": [
+  {
+   "name": "mon 16:00 fresh day",
+   "now": 1792418400,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "allowed",
+    "com.instagram.android": "allowed",
+    "com.netflix.mediaclient": "blocked:limit:video",
+    "com.spotify.music": "allowed",
+    "com.joytunes.simplypiano": "allowed",
+    "com.google.android.youtube": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "mon general exhausted",
+   "now": 1792418400,
+   "usage": {
+    "com.android.chrome": 3600
+   },
+   "expect": {
+    "com.android.chrome": "blocked:limit:general",
+    "com.instagram.android": "blocked:limit:general",
+    "com.google.android.youtube": "blocked:limit:general",
+    "com.spotify.music": "allowed",
+    "com.joytunes.simplypiano": "allowed",
+    "com.google.android.dialer": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "mon social sub-cap",
+   "now": 1792418400,
+   "usage": {
+    "com.instagram.android": 1800,
+    "com.android.chrome": 600
+   },
+   "expect": {
+    "com.instagram.android": "blocked:limit:social",
+    "com.snapchat.android": "blocked:limit:social",
+    "com.android.chrome": "allowed",
+    "com.google.android.youtube": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "mon general almost exhausted",
+   "now": 1792418400,
+   "usage": {
+    "com.android.chrome": 3599
+   },
+   "expect": {
+    "com.android.chrome": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "audio is separate from general",
+   "now": 1792418400,
+   "usage": {
+    "com.android.chrome": 3600,
+    "com.spotify.music": 7199
+   },
+   "expect": {
+    "com.spotify.music": "allowed",
+    "com.android.chrome": "blocked:limit:general"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "audio exhausted",
+   "now": 1792418400,
+   "usage": {
+    "com.spotify.music": 7200
+   },
+   "expect": {
+    "com.spotify.music": "blocked:limit:audio",
+    "com.audible.application": "blocked:limit:audio",
+    "com.android.chrome": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "sat budgets",
+   "now": 1792846800,
+   "usage": {
+    "com.android.chrome": 3600
+   },
+   "expect": {
+    "com.android.chrome": "allowed",
+    "com.netflix.mediaclient": "allowed",
+    "com.instagram.android": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "sat video exhausted",
+   "now": 1792846800,
+   "usage": {
+    "com.netflix.mediaclient": 9000
+   },
+   "expect": {
+    "com.netflix.mediaclient": "blocked:limit:video",
+    "com.disney.disneyplus": "blocked:limit:video",
+    "com.android.chrome": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "fri video allowed",
+   "now": 1792764000,
+   "usage": {
+    "com.netflix.mediaclient": 3600
+   },
+   "expect": {
+    "com.netflix.mediaclient": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "sun after DST change, weekend general budget",
+   "now": 1792940400,
+   "usage": {
+    "com.android.chrome": 5399
+   },
+   "expect": {
+    "com.android.chrome": "allowed",
+    "com.netflix.mediaclient": "blocked:limit:video"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "sun 02:30 downtime across DST",
+   "now": 1792888200,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:downtime",
+    "com.joytunes.simplypiano": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "mon 23:00 downtime",
+   "now": 1792443600,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:downtime",
+    "com.instagram.android": "blocked:downtime",
+    "com.joytunes.simplypiano": "allowed",
+    "com.google.android.dialer": "allowed",
+    "com.zhiliaoapp.musically": "blocked:blocked"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "tue 06:59 still downtime",
+   "now": 1792472340,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:downtime"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "tue 07:00 downtime over",
+   "now": 1792472400,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "approval",
+   "now": 1792418400,
+   "usage": {},
+   "user_installed": [
+    "com.random.game",
+    "com.spotify.music",
+    "com.instagram.android",
+    "com.zhiliaoapp.musically"
+   ],
+   "expect": {
+    "com.random.game": "blocked:unapproved",
+    "com.spotify.music": "allowed",
+    "com.instagram.android": "allowed",
+    "com.google.android.youtube": "allowed",
+    "com.zhiliaoapp.musically": "blocked:blocked"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "thu extra 30m on general",
+   "now": 1792677600,
+   "usage": {
+    "com.android.chrome": 3600
+   },
+   "expect": {
+    "com.android.chrome": "allowed",
+    "com.instagram.android": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "thu extra used up",
+   "now": 1792677600,
+   "usage": {
+    "com.android.chrome": 5400
+   },
+   "expect": {
+    "com.android.chrome": "blocked:limit:general"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "tue 12:30 lock",
+   "now": 1792492200,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:lock",
+    "com.joytunes.simplypiano": "allowed",
+    "com.google.android.dialer": "allowed",
+    "com.spotify.music": "blocked:lock"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "wed 22:30 unlock beats downtime and limits",
+   "now": 1792614600,
+   "usage": {
+    "com.android.chrome": 9999,
+    "com.netflix.mediaclient": 1
+   },
+   "expect": {
+    "com.android.chrome": "allowed",
+    "com.netflix.mediaclient": "allowed",
+    "com.zhiliaoapp.musically": "blocked:blocked",
+    "com.random.game": "blocked:unapproved"
+   },
+   "user_installed": [
+    "com.random.game"
+   ],
+   "screen_locked": false
+  },
+  {
+   "name": "tue 12:30 lock without screen leaves the screen unlocked",
+   "now": 1792492200,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:lock"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "fri 13:59 before the screen lock",
+   "now": 1792756740,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "allowed",
+    "com.joytunes.simplypiano": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "fri 14:00 lock with screen starts",
+   "now": 1792756800,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:lock",
+    "com.joytunes.simplypiano": "allowed",
+    "com.google.android.dialer": "allowed",
+    "com.zhiliaoapp.musically": "blocked:blocked"
+   },
+   "screen_locked": true
+  },
+  {
+   "name": "fri 14:59:59 lock with screen still on",
+   "now": 1792760399,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:lock",
+    "com.joytunes.simplypiano": "allowed"
+   },
+   "screen_locked": true
+  },
+  {
+   "name": "fri 15:00 lock with screen expired",
+   "now": 1792760400,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "allowed",
+    "com.joytunes.simplypiano": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "fri 22:59 plain downtime, screen not locked",
+   "now": 1792789140,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:downtime",
+    "com.joytunes.simplypiano": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "fri 23:30 lock_screen downtime",
+   "now": 1792791000,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:downtime",
+    "com.joytunes.simplypiano": "allowed",
+    "com.google.android.dialer": "allowed"
+   },
+   "screen_locked": true
+  },
+  {
+   "name": "sat 05:59 lock_screen downtime across midnight",
+   "now": 1792814340,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:downtime",
+    "com.joytunes.simplypiano": "allowed"
+   },
+   "screen_locked": true
+  },
+  {
+   "name": "sat 06:00 lock_screen over, plain downtime goes on",
+   "now": 1792814400,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:downtime"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "sat 23:30 lock_screen window only starts wed/fri",
+   "now": 1792877400,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:downtime"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "thu 05:30 lock_screen window started wed",
+   "now": 1792639800,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:downtime"
+   },
+   "screen_locked": true
+  },
+  {
+   "name": "thu 23:30 no lock_screen window starts thu",
+   "now": 1792704600,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:downtime"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "wed 23:15 unlock beats lock_screen downtime",
+   "now": 1792617300,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "allowed",
+    "com.joytunes.simplypiano": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "wed 23:30 unlock expired, lock_screen downtime",
+   "now": 1792618200,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:downtime",
+    "com.joytunes.simplypiano": "allowed"
+   },
+   "screen_locked": true
+  },
+  {
+   "name": "tue 19:15 dinner downtime with lock_screen",
+   "now": 1792516500,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "blocked:downtime",
+    "com.joytunes.simplypiano": "allowed"
+   },
+   "screen_locked": true
+  },
+  {
+   "name": "tue 19:30 dinner downtime over",
+   "now": 1792517400,
+   "usage": {},
+   "expect": {
+    "com.android.chrome": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "fri 16:30 social exhausted before the bonus",
+   "now": 1792765800,
+   "usage": {
+    "com.instagram.android": 1800
+   },
+   "expect": {
+    "com.instagram.android": "blocked:limit:social",
+    "com.android.chrome": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "fri 17:30 social bonus 20m",
+   "now": 1792769400,
+   "usage": {
+    "com.instagram.android": 2999
+   },
+   "expect": {
+    "com.instagram.android": "allowed"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "fri 17:30 social bonus used up",
+   "now": 1792769400,
+   "usage": {
+    "com.instagram.android": 3000
+   },
+   "expect": {
+    "com.instagram.android": "blocked:limit:social"
+   },
+   "screen_locked": false
+  },
+  {
+   "name": "fri 21:00 social bonus expired",
+   "now": 1792782000,
+   "usage": {
+    "com.instagram.android": 2000
+   },
+   "expect": {
+    "com.instagram.android": "blocked:limit:social"
+   },
+   "screen_locked": false
+  }
+ ],
+ "notify_cases": [
+  {
+   "name": "social thresholds, each once; social counts in general too",
+   "steps": [
+    {
+     "now": 1792418400,
+     "local": "2026-10-19T16:00",
+     "usage": {
+      "com.instagram.android": 899
+     },
+     "expect": []
+    },
+    {
+     "now": 1792418460,
+     "local": "2026-10-19T16:01",
+     "usage": {
+      "com.instagram.android": 900
+     },
+     "expect": [
+      "quota:social:50:900"
+     ]
+    },
+    {
+     "now": 1792418520,
+     "local": "2026-10-19T16:02",
+     "usage": {
+      "com.instagram.android": 1000
+     },
+     "expect": []
+    },
+    {
+     "now": 1792419000,
+     "local": "2026-10-19T16:10",
+     "usage": {
+      "com.instagram.android": 1440
+     },
+     "expect": [
+      "quota:social:80:360"
+     ]
+    },
+    {
+     "now": 1792419060,
+     "local": "2026-10-19T16:11",
+     "usage": {
+      "com.instagram.android": 1500
+     },
+     "expect": []
+    },
+    {
+     "now": 1792419300,
+     "local": "2026-10-19T16:15",
+     "usage": {
+      "com.instagram.android": 1710
+     },
+     "expect": [
+      "quota:social:95:90"
+     ]
+    },
+    {
+     "now": 1792419600,
+     "local": "2026-10-19T16:20",
+     "usage": {
+      "com.instagram.android": 1800
+     },
+     "expect": [
+      "quota:general:50:1800"
+     ]
+    },
+    {
+     "now": 1792419660,
+     "local": "2026-10-19T16:21",
+     "usage": {
+      "com.instagram.android": 1800,
+      "com.android.chrome": 1080
+     },
+     "expect": [
+      "quota:general:80:720"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "a jump over several thresholds notifies the highest only",
+   "steps": [
+    {
+     "now": 1792418400,
+     "local": "2026-10-19T16:00",
+     "usage": {
+      "com.instagram.android": 1500
+     },
+     "expect": [
+      "quota:social:80:300"
+     ]
+    },
+    {
+     "now": 1792418700,
+     "local": "2026-10-19T16:05",
+     "usage": {
+      "com.instagram.android": 1710
+     },
+     "expect": [
+      "quota:social:95:90"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "already exhausted when first seen: no notice",
+   "steps": [
+    {
+     "now": 1792418400,
+     "local": "2026-10-19T16:00",
+     "usage": {
+      "com.android.chrome": 3600
+     },
+     "expect": []
+    },
+    {
+     "now": 1792418460,
+     "local": "2026-10-19T16:01",
+     "usage": {
+      "com.android.chrome": 3600
+     },
+     "expect": []
+    }
+   ]
+  },
+  {
+   "name": "extra time re-arms the thresholds above the new percentage",
+   "steps": [
+    {
+     "now": 1792764000,
+     "local": "2026-10-23T16:00",
+     "usage": {
+      "com.instagram.android": 1710
+     },
+     "expect": [
+      "quota:social:95:90"
+     ]
+    },
+    {
+     "now": 1792767600,
+     "local": "2026-10-23T17:00",
+     "usage": {
+      "com.instagram.android": 1710
+     },
+     "expect": []
+    },
+    {
+     "now": 1792768200,
+     "local": "2026-10-23T17:10",
+     "usage": {
+      "com.instagram.android": 2400
+     },
+     "expect": [
+      "quota:social:80:600"
+     ]
+    },
+    {
+     "now": 1792768800,
+     "local": "2026-10-23T17:20",
+     "usage": {
+      "com.instagram.android": 2850
+     },
+     "expect": [
+      "quota:social:95:150"
+     ]
+    },
+    {
+     "now": 1792782000,
+     "local": "2026-10-23T21:00",
+     "usage": {
+      "com.instagram.android": 2850
+     },
+     "expect": []
+    }
+   ]
+  },
+  {
+   "name": "two limits crossing in one tick, same app, tie: the earlier in the policy notifies, the other's threshold is spent",
+   "steps": [
+    {
+     "now": 1792418400,
+     "usage": {
+      "com.instagram.android": 1440,
+      "com.android.chrome": 1800
+     },
+     "expect": [
+      "quota:social:80:360"
+     ]
+    },
+    {
+     "now": 1792418460,
+     "usage": {
+      "com.instagram.android": 1440,
+      "com.android.chrome": 1800
+     },
+     "expect": []
+    },
+    {
+     "now": 1792418520,
+     "usage": {
+      "com.instagram.android": 1440,
+      "com.android.chrome": 1980
+     },
+     "expect": [
+      "quota:general:95:180"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "two limits crossing in one tick, same app: the one with less time left notifies",
+   "steps": [
+    {
+     "now": 1792418400,
+     "usage": {
+      "com.instagram.android": 900,
+      "com.android.chrome": 2520
+     },
+     "expect": [
+      "quota:general:95:180"
+     ]
+    },
+    {
+     "now": 1792418460,
+     "usage": {
+      "com.instagram.android": 900,
+      "com.android.chrome": 2520
+     },
+     "expect": []
+    },
+    {
+     "now": 1792418520,
+     "usage": {
+      "com.instagram.android": 1440,
+      "com.android.chrome": 2520
+     },
+     "expect": [
+      "quota:social:80:360"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "two limits crossing in one tick without a shared app: both notify",
+   "steps": [
+    {
+     "now": 1792764000,
+     "usage": {
+      "com.netflix.mediaclient": 8100,
+      "com.instagram.android": 1440
+     },
+     "expect": [
+      "quota:social:80:360",
+      "quota:video:90:900"
+     ]
+    },
+    {
+     "now": 1792764060,
+     "usage": {
+      "com.netflix.mediaclient": 8100,
+      "com.instagram.android": 1440,
+      "com.android.chrome": 360
+     },
+     "expect": [
+      "quota:general:50:1800"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "budget 0 day, per-limit notify_at [90], audio without notifications",
+   "steps": [
+    {
+     "now": 1792418400,
+     "local": "2026-10-19T16:00",
+     "usage": {
+      "com.netflix.mediaclient": 120,
+      "com.spotify.music": 7000
+     },
+     "expect": []
+    },
+    {
+     "now": 1792764000,
+     "local": "2026-10-23T16:00",
+     "usage": {
+      "com.netflix.mediaclient": 8099
+     },
+     "expect": []
+    },
+    {
+     "now": 1792764060,
+     "local": "2026-10-23T16:01",
+     "usage": {
+      "com.netflix.mediaclient": 8100,
+      "com.spotify.music": 7100
+     },
+     "expect": [
+      "quota:video:90:900"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "midnight reset",
+   "steps": [
+    {
+     "now": 1792436400,
+     "local": "2026-10-19T21:00",
+     "usage": {
+      "com.instagram.android": 900
+     },
+     "expect": [
+      "quota:social:50:900"
+     ]
+    },
+    {
+     "now": 1792450800,
+     "local": "2026-10-20T01:00",
+     "usage": {
+      "com.instagram.android": 900
+     },
+     "expect": []
+    },
+    {
+     "now": 1792472400,
+     "local": "2026-10-20T07:00",
+     "usage": {},
+     "expect": []
+    },
+    {
+     "now": 1792476000,
+     "local": "2026-10-20T08:00",
+     "usage": {
+      "com.instagram.android": 900
+     },
+     "expect": [
+      "quota:social:50:900"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "quota notices wait for a lock override to end",
+   "steps": [
+    {
+     "now": 1792492200,
+     "local": "2026-10-20T12:30",
+     "usage": {
+      "com.instagram.android": 900
+     },
+     "expect": []
+    },
+    {
+     "now": 1792494000,
+     "local": "2026-10-20T13:00",
+     "usage": {
+      "com.instagram.android": 900
+     },
+     "expect": [
+      "quota:social:50:900"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "downtime notice once per window",
+   "steps": [
+    {
+     "now": 1792439640,
+     "local": "2026-10-19T21:54",
+     "usage": {},
+     "expect": []
+    },
+    {
+     "now": 1792439700,
+     "local": "2026-10-19T21:55",
+     "usage": {},
+     "expect": [
+      "downtime:22:00:300:pause"
+     ]
+    },
+    {
+     "now": 1792439730,
+     "local": "2026-10-19T21:55:30",
+     "usage": {},
+     "expect": []
+    },
+    {
+     "now": 1792439999,
+     "local": "2026-10-19T21:59:59",
+     "usage": {},
+     "expect": []
+    },
+    {
+     "now": 1792440000,
+     "local": "2026-10-19T22:00",
+     "usage": {},
+     "expect": []
+    },
+    {
+     "now": 1792526110,
+     "local": "2026-10-20T21:55:10",
+     "usage": {},
+     "expect": [
+      "downtime:22:00:290:pause"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "lock_screen window: pause and lock notice",
+   "steps": [
+    {
+     "now": 1792515420,
+     "local": "2026-10-20T18:57",
+     "usage": {},
+     "expect": [
+      "downtime:19:00:180:pause+lock"
+     ]
+    },
+    {
+     "now": 1792515480,
+     "local": "2026-10-20T18:58",
+     "usage": {},
+     "expect": []
+    },
+    {
+     "now": 1792517100,
+     "local": "2026-10-20T19:25",
+     "usage": {},
+     "expect": []
+    },
+    {
+     "now": 1792526160,
+     "local": "2026-10-20T21:56",
+     "usage": {},
+     "expect": [
+      "downtime:22:00:240:pause"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "lock_screen window starting inside downtime: lock notice",
+   "steps": [
+    {
+     "now": 1792785300,
+     "local": "2026-10-23T21:55",
+     "usage": {},
+     "expect": [
+      "downtime:22:00:300:pause"
+     ]
+    },
+    {
+     "now": 1792788900,
+     "local": "2026-10-23T22:55",
+     "usage": {},
+     "expect": [
+      "downtime:23:00:300:lock"
+     ]
+    },
+    {
+     "now": 1792788960,
+     "local": "2026-10-23T22:56",
+     "usage": {},
+     "expect": []
+    }
+   ]
+  },
+  {
+   "name": "unlock covering the start: no notice; its end inside downtime: notice",
+   "steps": [
+    {
+     "now": 1792612500,
+     "local": "2026-10-21T21:55",
+     "usage": {},
+     "expect": []
+    },
+    {
+     "now": 1792614600,
+     "local": "2026-10-21T22:30",
+     "usage": {},
+     "expect": []
+    },
+    {
+     "now": 1792616100,
+     "local": "2026-10-21T22:55",
+     "usage": {},
+     "expect": []
+    },
+    {
+     "now": 1792617900,
+     "local": "2026-10-21T23:25",
+     "usage": {
+      "com.instagram.android": 900
+     },
+     "expect": [
+      "downtime:23:30:300:pause+lock"
+     ]
+    },
+    {
+     "now": 1792618020,
+     "local": "2026-10-21T23:27",
+     "usage": {
+      "com.instagram.android": 900
+     },
+     "expect": []
+    }
+   ]
+  }
+ ]
+}

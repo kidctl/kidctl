@@ -1,0 +1,44 @@
+# Reference policy for the shared evaluation vectors (spec/vectors.json).
+# Rules of a fictional child, Alex. Changing it requires regenerating vectors.json's
+# "policy" member: `cargo run -- compile spec/vectors-policy.yaml spec/vectors-overrides.yaml`.
+child: alex
+timezone: Europe/Brussels
+downtime:
+  - {start: "22:00", end: "07:00"}
+  # Wed and Fri nights: the screen itself stays locked too (crosses midnight).
+  - {start: "23:00", end: "06:00", days: [wed, fri], lock_screen: true}
+  # Tuesday dinner: apps paused and the screen locked (a window that starts
+  # outside the others, for the downtime notice with lock_screen).
+  - {start: "19:00", end: "19:30", days: [tue], lock_screen: true}
+always_allowed:
+  - com.google.android.dialer
+  - com.google.android.apps.messaging
+  - com.google.android.apps.maps
+  - com.joytunes.simplypiano
+blocked:
+  - com.zhiliaoapp.musically
+approval: true
+approved: []
+limits:
+  - name: social
+    apps: [com.instagram.android, com.snapchat.android, com.whatsapp]
+    daily: {weekdays: 30m, weekend: 45m}
+  - name: audio
+    apps: [com.spotify.music, com.audible.application]
+    daily: {weekdays: 2h, weekend: 3h}
+    notify_at: []          # no notifications for this limit
+  - name: video
+    apps: [com.netflix.mediaclient, com.disney.disneyplus, com.amazon.avod.thirdpartyclient]
+    daily: {fri: 2h30m, sat: 2h30m, default: 0}
+    notify_at: [90]
+  - name: general
+    apps: ["*"]
+    exclude: [com.spotify.music, com.audible.application, com.netflix.mediaclient, com.disney.disneyplus, com.amazon.avod.thirdpartyclient]
+    daily: {weekdays: 1h, weekend: 1h30m}
+notify: {quota_at: [50, 80, 95], before_downtime: 5m, locale: fr}
+device:
+  restrictions: [no_factory_reset, no_safe_boot, no_config_date_time, disallow_config_default_apps]
+  wifi_ssids: {allow: [HomeNet, "École du Centre"]}
+  default_apps: {browser: com.android.chrome, launcher: com.google.android.apps.nexuslauncher}
+  organization_name: kidctl
+  user_control_disabled: [com.tailscale.ipn]

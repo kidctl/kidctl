@@ -1,0 +1,30 @@
+# Alex's rules (reference: docs/POLICY.md). Apps are Android package names:
+# the MCP tool `apps` lists those installed on the phone.
+child: alex
+timezone: Europe/Brussels
+downtime:
+  - {start: "21:30", end: "07:00"}            # nights: only always_allowed apps
+always_allowed:
+  - com.google.android.dialer
+  - com.google.android.apps.messaging
+  - com.google.android.apps.maps
+blocked:
+  - com.zhiliaoapp.musically                  # TikTok
+approval: true                                # new apps stay blocked until approved
+approved:
+  - com.android.chrome
+  - com.google.android.youtube
+limits:
+  - name: video
+    apps: [com.google.android.youtube]
+    daily: {weekdays: 30m, weekend: 1h}
+  - name: general
+    apps: ["*"]                               # everything else, together
+    exclude: [com.google.android.youtube]
+    daily: {weekdays: 1h, weekend: 2h}
+notify: {quota_at: [50, 80, 95], before_downtime: 5m, locale: en}
+device:
+  restrictions: [no_factory_reset, no_safe_boot, no_config_date_time, no_add_user,
+                 no_install_unknown_sources_globally, no_control_apps]
+  organization_name: "Alex's parents"
+  lock_screen_info: "Alex's phone - if found, please call +1 555 0100"

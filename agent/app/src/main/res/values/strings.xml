@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">kidctl</string>
+    <string name="admin_label">kidctl parental control</string>
+    <string name="admin_description">Applies the family screen-time rules.</string>
+</resources>

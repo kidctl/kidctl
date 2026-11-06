@@ -1,0 +1,3 @@
+# Temporary exceptions (docs/POLICY.md, "<child>.overrides.yaml"), e.g.
+#   - {extra: 30m, limit: general, until: "2026-12-24T23:00", note: "Christmas Eve"}
+overrides: []

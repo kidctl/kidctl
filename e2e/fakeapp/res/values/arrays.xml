@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="mode_entries"><item>Always</item><item>Never</item><item>User decides</item></string-array>
+    <string-array name="mode_values"><item>always</item><item>never</item><item>user-decides</item></string-array>
+    <string-array name="feature_entries"><item>A</item><item>B</item><item>C</item></string-array>
+    <string-array name="feature_values"><item>a</item><item>b</item><item>c</item></string-array>
+</resources>

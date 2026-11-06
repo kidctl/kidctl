@@ -1,0 +1,4 @@
+# Phones allowed to sync, and whose they are. token_sha256: the SHA-256 that
+# `kidctl token` prints next to a new device token (the phone gets the token).
+devices:
+  - {id: alex-phone, child: alex, token_sha256: 0000000000000000000000000000000000000000000000000000000000000000}

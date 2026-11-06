@@ -1,0 +1,133 @@
+# kidctl server: device sync API (/api/v1/sync), agent download, MCP (OAuth
+# at /mcp). Put it behind your HTTPS ingress or tunnel: phones only talk
+# HTTPS to it.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  labels:
+    app.kubernetes.io/name: server
+    app.kubernetes.io/part-of: kidctl
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate   # single SQLite writer
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: server
+        app.kubernetes.io/part-of: kidctl
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532   # the data volume and the kidctl-gitops Secret files readable by the server
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: server
+          image: kidctl-server
+          args: ["serve"]
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: KIDCTL_CONFIG
+              value: /etc/kidctl
+            - name: KIDCTL_DB
+              value: /data/kidctl.db
+            - name: KIDCTL_LISTEN
+              value: 0.0.0.0:8080
+            - name: KIDCTL_ALLOWED_HOSTS
+              value: kidctl.example.net               # your public hostname
+            # MCP over OAuth (Claude). The owner password hash is in the
+            # kidctl-oauth Secret, created by hand.
+            - name: KIDCTL_PUBLIC_URL
+              value: "https://kidctl.example.net"     # your public origin
+            - name: KIDCTL_STATE_DIR
+              value: /data/oauth
+            - name: KIDCTL_OWNER_PASSWORD_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: kidctl-oauth
+                  key: KIDCTL_OWNER_PASSWORD_HASH
+            # MCP write tools: each change is a commit pushed to the repo that
+            # holds policies/ (deploy key in the kidctl-gitops Secret, created
+            # by hand). Remove these and the gitops-key volume for a
+            # read-only MCP.
+            - name: KIDCTL_GITOPS_REMOTE
+              value: "git@github.com:you/infra.git"   # your GitOps repo
+            - name: KIDCTL_GITOPS_BRANCH
+              value: main
+            - name: KIDCTL_GITOPS_PATH
+              value: kidctl/policies                  # policies/ inside that repo
+            - name: KIDCTL_GITOPS_SSH_KEY
+              value: /etc/kidctl-gitops/id_ed25519
+            - name: KIDCTL_GITOPS_KNOWN_HOSTS
+              value: /etc/kidctl-gitops/known_hosts   # the git host's keys, pinned
+            - name: KIDCTL_GITOPS_AUTHOR
+              value: "kidctl MCP <kidctl-mcp@example.net>"
+          volumeMounts:
+            # A directory mount (no subPath), so ConfigMap updates propagate
+            # and the server hot-reloads them.
+            - name: policies
+              mountPath: /etc/kidctl
+              readOnly: true
+            - name: data
+              mountPath: /data
+            - name: gitops-key
+              mountPath: /etc/kidctl-gitops
+              readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 30
+      volumes:
+        - name: policies
+          configMap:
+            name: kidctl-policies
+        - name: data
+          persistentVolumeClaim:
+            claimName: data
+        - name: gitops-key
+          secret:
+            secretName: kidctl-gitops   # id_ed25519, known_hosts
+            defaultMode: 0440
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+  labels:
+    app.kubernetes.io/name: server
+spec:
+  selector:
+    app.kubernetes.io/name: server
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http

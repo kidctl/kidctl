@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Android 17 blocks private (LAN) addresses without it. Production talks to a
+         public URL; e2e/run.sh reaches its local server at 10.0.2.2 with adb
+         switched off by no_debugging_features (adb reverse dies with adbd). -->
+    <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+
+    <application
+        android:label="@string/app_name"
+        android:allowBackup="false"
+        android:networkSecurityConfig="@xml/network_security_config"
+        tools:ignore="MissingApplicationIcon">
+
+        <receiver
+            android:name=".AdminReceiver"
+            android:exported="true"
+            android:label="@string/admin_label"
+            android:description="@string/admin_description"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- PackageInstaller session results of the self-update (Updater). -->
+        <receiver
+            android:name=".InstallResultReceiver"
+            android:exported="false" />
+
+        <!-- Provisioning only: `adb shell am broadcast` (the shell holds
+             WRITE_SECURE_SETTINGS; ordinary apps cannot). -->
+        <receiver
+            android:name=".ConfigReceiver"
+            android:exported="true"
+            android:permission="android.permission.WRITE_SECURE_SETTINGS">
+            <intent-filter>
+                <action android:name="io.github.kidctl.agent.CONFIGURE" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".EnforcerService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Parental control enforcement (device owner)" />
+        </service>
+    </application>
+</manifest>
