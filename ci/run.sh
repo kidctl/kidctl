@@ -27,8 +27,8 @@ ZIZMOR_SHA256=d185f726bdaf92df78273217dfdd24ebcd6b0ef48cf3ce776ff5762b6e138c99
 # agent/gradle/wrapper/gradle-wrapper.jar, as published by Gradle for this
 # version (https://services.gradle.org/distributions/gradle-<v>-wrapper.jar.sha256).
 # The distribution itself is checked by Gradle (distributionSha256Sum).
-GRADLE_VERSION=9.4.1
-GRADLE_WRAPPER_SHA256=55243ef57851f12b070ad14f7f5bb8302daceeebc5bce5ece5fa6edb23e1145c
+GRADLE_VERSION=9.8.2
+GRADLE_WRAPPER_SHA256=3b8a25775a69158b5ad2b1d17a80a88dc7b40a352a73eb27d06c612a7ce68e98
 
 cd "$(git rev-parse --show-toplevel)"
 # No warning is tolerated: every cargo invocation turns warnings into errors.
