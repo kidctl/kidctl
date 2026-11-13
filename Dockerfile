@@ -16,7 +16,7 @@ RUN touch src/main.rs src/lib.rs && cargo build --release --locked
 # pinned: when a Debian security update replaces one, the old version leaves
 # the mirror and this build fails; bump the pin to the new version
 # (`apt-cache policy git openssh-client ca-certificates` in debian:12-slim).
-FROM debian:12-slim
+FROM debian:13-slim
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        git=1:2.39.5-0+deb12u3 \
